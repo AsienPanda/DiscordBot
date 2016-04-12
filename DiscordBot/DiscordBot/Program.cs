@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace DiscordBot
 {
@@ -17,13 +18,16 @@ namespace DiscordBot
 
             bot.ExecuteAndWait(async () =>
            {
-               await bot.Connect("MTY4NjU2Nzk1MDYwMDExMDA4.Ce4r7w.4q8AJKHXRQB_lCPSHXBwOrUYFDM");
+               await bot.Connect("MTY4NjU2Nzk1MDYwMDExMDA4.Ce6OKg.hGiZST2ofkbcdNf5hn571JTR3-Q");
                bot.SetGame("with a kitty");
-               var avatar = Image.FromFile("images/misaka_cat.png");
-               var stream = new System.IO.MemoryStream();
-               avatar.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-               await bot.CurrentUser.Edit(avatar: stream,avatarType: ImageType.Png);
-             
+           
+               if (bot.CurrentUser.AvatarUrl == null)
+               {
+                   var fs = new FileStream("images/bot_avatar.png", FileMode.Open);
+                   await bot.CurrentUser.Edit(avatar: fs, avatarType: ImageType.Png);
+
+               }
+
            });
             
         }
