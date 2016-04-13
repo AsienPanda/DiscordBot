@@ -1,4 +1,6 @@
-﻿using Discord;
+﻿
+using Discord;
+using Discord.Commands;
 using System.Drawing;
 using System;
 using System.Collections.Generic;
@@ -15,12 +17,12 @@ namespace DiscordBot
         {
             var bot = new DiscordClient();
             bot.MessageReceived += Bot_MessageReceived;
-
+            Bot_CommandService(bot);
             bot.ExecuteAndWait(async () =>
            {
                await bot.Connect("MTY4NjU2Nzk1MDYwMDExMDA4.Ce6OKg.hGiZST2ofkbcdNf5hn571JTR3-Q");
-               bot.SetGame("with a kitty");
-           
+               if (bot.CurrentGame == null) bot.SetGame("with a kitty");
+
                if (bot.CurrentUser.AvatarUrl == null)
                {
                    var fs = new FileStream("images/bot_avatar.png", FileMode.Open);
@@ -28,8 +30,9 @@ namespace DiscordBot
 
                }
 
+
            });
-            
+
         }
 
         private static void Bot_MessageReceived(object sender, MessageEventArgs e)
@@ -37,12 +40,12 @@ namespace DiscordBot
             string text = e.Message.Text;
 
             if (e.Message.IsAuthor) return;
-            if(text == "!rules")
+            if (text == "!rules")
             {
                 e.Channel.SendMessage(e.User.Mention + " \"There are none\", Misaka-0170 blankly states.");
             }
 
-            if (text.ToLower().Contains("misaka") )
+            if (text.ToLower().Contains("misaka"))
             {
                 if (text.ToLower().Contains("who") || text.ToLower().Contains("what"))
                 {
@@ -52,9 +55,24 @@ namespace DiscordBot
                 }
             }
 
-           
-           
+
+
         }
 
+        private static void Bot_CommandService(DiscordClient bot)
+        {
+            CommandServiceConfigBuilder cscb = new CommandServiceConfigBuilder()
+            {
+                PrefixChar = '~', // prefix char for commands
+                HelpMode = HelpMode.Public
+            };
+
+            var cs = new CommandService(cscb);
+
+            bot = bot.AddService(cs);
+            char prefix = (char)cscb.PrefixChar;
+            Commands.TestCommand(bot, cs);
+            Console.WriteLine("The command char is {0}", prefix);
+        }
     }
 }
