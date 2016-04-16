@@ -106,7 +106,7 @@ namespace DiscordBot
                     else {
                         Random rnd = new Random();
 
-                        await e.Channel.SendMessage(String.Format("_Misaka chooses **{0}**_", list.ElementAt(rnd.Next(0, list.Count - 1))));
+                        await e.Channel.SendMessage(String.Format("_Misaka chooses **{0}**_", list.ElementAt(rnd.Next(0, list.Count))));
                     }
 
 
